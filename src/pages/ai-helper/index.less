@@ -1,0 +1,229 @@
+.ai-helper {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f5f5f5;
+
+  .tabs-header {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    padding: 0 16px;
+    height: 48px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    position: relative;
+    z-index: 10;
+
+    .tab-item {
+      padding: 0 16px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      position: relative;
+      margin-right: 8px;
+
+      .tab-text {
+        font-size: 16px;
+        color: #666;
+        transition: all 0.3s;
+      }
+
+      &.active {
+        .tab-text {
+          font-size: 18px;
+          font-weight: 600;
+          color: #333;
+        }
+
+        .tab-line {
+          position: absolute;
+          bottom: 0;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 20px;
+          height: 3px;
+          background-color: #4cd964;
+          border-radius: 2px;
+        }
+      }
+    }
+
+    .clear-btn {
+      margin-left: auto;
+      padding: 8px;
+      &:active {
+        opacity: 0.6;
+      }
+    }
+  }
+
+  .chat-content {
+    flex: 1;
+    padding: 16px;
+    box-sizing: border-box;
+    overflow-y: auto;
+
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding-top: 100px;
+      opacity: 0.6;
+
+      .empty-text {
+        margin-top: 16px;
+        font-size: 16px;
+        color: #999;
+        text-align: center;
+        line-height: 1.6;
+      }
+    }
+
+    .chat-item {
+      display: flex;
+      margin-bottom: 20px;
+      align-items: flex-start;
+
+      .avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-shrink: 0;
+      }
+
+      .bubble {
+        max-width: 70%;
+        padding: 12px 16px;
+        border-radius: 12px;
+        font-size: 17px;
+        line-height: 1.6;
+        position: relative;
+        word-break: break-all;
+      }
+
+      &.user {
+        flex-direction: row-reverse;
+
+        .avatar {
+          background-color: #4cd964;
+          margin-left: 12px;
+        }
+
+        .bubble {
+          background-color: #95ec69; // 仿微信绿色
+          color: #000;
+          border-top-right-radius: 2px;
+        }
+      }
+
+      &.ai {
+        flex-direction: row;
+
+        .avatar {
+          background-color: #2196f3;
+          margin-right: 12px;
+        }
+
+        .bubble {
+          background-color: #fff;
+          color: #333;
+          border-top-left-radius: 2px;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+      }
+
+      .loading-bubble {
+        display: flex;
+        align-items: center;
+        height: 24px;
+
+        .dot {
+          width: 6px;
+          height: 6px;
+          background-color: #999;
+          border-radius: 50%;
+          margin: 0 3px;
+          animation: bounce 1.4s infinite ease-in-out both;
+
+          &:nth-child(1) {
+            animation-delay: -0.32s;
+          }
+          &:nth-child(2) {
+            animation-delay: -0.16s;
+          }
+        }
+      }
+    }
+
+    .bottom-spacer {
+      height: 20px;
+    }
+  }
+
+  .input-bar {
+    background-color: #f7f7f7;
+    border-top: 1px solid #eee;
+    padding: 10px 16px;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom));
+    display: flex;
+    align-items: center;
+
+    .voice-btn {
+      padding: 8px;
+      margin-right: 8px;
+      &:active {
+        opacity: 0.6;
+      }
+    }
+
+    .chat-input {
+      flex: 1;
+      height: 40px;
+      background-color: #fff;
+      border-radius: 6px;
+      padding: 0 12px;
+      font-size: 16px;
+      margin-right: 12px;
+    }
+
+    .send-btn {
+      background-color: #4cd964;
+      padding: 8px 16px;
+      border-radius: 6px;
+      transition: all 0.3s;
+
+      .send-text {
+        font-size: 15px;
+        color: #fff;
+        font-weight: 500;
+      }
+
+      &.disabled {
+        background-color: #e0e0e0;
+
+        .send-text {
+          color: #999;
+        }
+      }
+
+      &:active:not(.disabled) {
+        opacity: 0.8;
+      }
+    }
+  }
+}
+
+@keyframes bounce {
+  0%,
+  80%,
+  100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
