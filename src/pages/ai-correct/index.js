@@ -2,13 +2,10 @@ import { View, Text, Textarea, ScrollView } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import { AtButton, AtIcon, AtMessage, AtProgress } from "taro-ui";
 import { useState } from "react";
+import classNames from "classnames";
 import Navbar from "../../components/Navbar";
 import Loading from "../../components/Loading";
-import {
-  checkContentSafety,
-  mockOCR,
-  mockCorrection,
-} from "../../services/mockAI";
+import { checkContentSafety, mockOCR, mockCorrection } from "../../services/mockAI";
 import "./index.less";
 
 export default function AICorrect() {
@@ -83,41 +80,50 @@ export default function AICorrect() {
   };
 
   return (
-    <View className="ai-correct">
+    <View className="ai-correct bg-gray-50 min-h-screen flex flex-col">
       <Navbar title="AI批改" back={true} />
       <AtMessage />
       <Loading show={loading} text={loadingText} />
 
-      <ScrollView scrollY className="content">
+      <ScrollView scrollY className="flex-1 p-4 box-border">
         {/* 输入区域 */}
-        <View className="input-card">
-          <View className="card-header">
-            <Text className="card-title">作文内容</Text>
-            <View className="ocr-btn" onClick={handleOCR}>
-              <AtIcon value="camera" size="18" color="#4cd964" />
-              <Text className="btn-text">拍照识别</Text>
+        <View className="bg-white rounded-3xl p-5 shadow-sm mb-6">
+          <View className="flex justify-between items-center mb-4">
+            <Text className="text-lg font-bold text-gray-800">作文内容</Text>
+            <View
+              className="flex items-center px-3 py-1.5 bg-green-50 rounded-full active:bg-green-100 transition-colors"
+              onClick={handleOCR}
+            >
+              <AtIcon value="camera" size="16" color="#4cd964" />
+              <Text className="text-sm font-medium text-[#4cd964] ml-1">拍照识别</Text>
             </View>
           </View>
-          <View className="textarea-wrapper">
+          <View className="relative bg-gray-50 rounded-xl p-4 min-h-[240px]">
             <Textarea
-              className="input-area"
+              className="w-full h-full min-h-[200px] text-base leading-relaxed text-gray-800 bg-transparent"
               value={content}
               onInput={handleContentChange}
               placeholder="在此输入或粘贴作文，也可以拍照识别哦~"
+              placeholderClass="text-gray-400"
               maxlength={-1}
             />
-            <Text className="char-count">{content.length}字</Text>
+            <Text className="absolute bottom-3 right-4 text-xs text-gray-400">
+              {content.length}字
+            </Text>
           </View>
         </View>
 
         {/* 提交按钮 */}
-        <View className="action-area">
+        <View className="mb-8">
           <AtButton
             type="primary"
             circle
             disabled={!content.trim()}
             onClick={handleCorrect}
-            className="submit-btn"
+            className={classNames("w-full py-2 text-lg font-bold shadow-lg transition-all", {
+              "shadow-blue-200": content.trim(),
+              "opacity-60": !content.trim(),
+            })}
           >
             提交批改
           </AtButton>
@@ -125,74 +131,91 @@ export default function AICorrect() {
 
         {/* 结果区域 */}
         {result && (
-          <View className="result-container">
+          <View className="result-container animate-fade-in pb-8">
             {/* 总分卡片 */}
-            <View className="score-card">
-              <View className="score-circle">
-                <Text className="score-num">{result.totalScore}</Text>
-                <Text className="score-label">总分</Text>
+            <View className="bg-white rounded-3xl p-6 shadow-sm mb-4 flex items-center justify-between">
+              <View className="flex flex-col items-center justify-center w-24 h-24 rounded-full bg-blue-50 border-4 border-blue-100">
+                <Text className="text-3xl font-bold text-blue-600 leading-none">
+                  {result.totalScore}
+                </Text>
+                <Text className="text-xs text-blue-400 mt-1">总分</Text>
               </View>
-              <View className="dimensions">
-                <View className="dim-item">
-                  <Text className="dim-label">内容 (40)</Text>
-                  <View style={{ flex: 1 }}>
+              <View className="flex-1 ml-6 space-y-3">
+                <View className="flex items-center">
+                  <Text className="text-sm text-gray-500 w-16">内容 (40)</Text>
+                  <View className="flex-1 mx-2">
                     <AtProgress
                       percent={(result.dimensions.content / 40) * 100}
                       color="#FFC107"
                       isHidePercent
+                      strokeWidth={6}
                     />
                   </View>
-                  <Text className="dim-score">{result.dimensions.content}</Text>
+                  <Text className="text-sm font-bold text-gray-700">
+                    {result.dimensions.content}
+                  </Text>
                 </View>
-                <View className="dim-item">
-                  <Text className="dim-label">语句 (30)</Text>
-                  <View style={{ flex: 1 }}>
+                <View className="flex items-center">
+                  <Text className="text-sm text-gray-500 w-16">语句 (30)</Text>
+                  <View className="flex-1 mx-2">
                     <AtProgress
                       percent={(result.dimensions.sentences / 30) * 100}
                       color="#4cd964"
                       isHidePercent
+                      strokeWidth={6}
                     />
                   </View>
-                  <Text className="dim-score">{result.dimensions.sentences}</Text>
+                  <Text className="text-sm font-bold text-gray-700">
+                    {result.dimensions.sentences}
+                  </Text>
                 </View>
-                <View className="dim-item">
-                  <Text className="dim-label">结构 (30)</Text>
-                  <View style={{ flex: 1 }}>
+                <View className="flex items-center">
+                  <Text className="text-sm text-gray-500 w-16">结构 (30)</Text>
+                  <View className="flex-1 mx-2">
                     <AtProgress
                       percent={(result.dimensions.structure / 30) * 100}
                       color="#2196F3"
                       isHidePercent
+                      strokeWidth={6}
                     />
                   </View>
-                  <Text className="dim-score">{result.dimensions.structure}</Text>
+                  <Text className="text-sm font-bold text-gray-700">
+                    {result.dimensions.structure}
+                  </Text>
                 </View>
               </View>
             </View>
 
             {/* 评语 */}
-            <View className="feedback-card">
-              <Text className="card-title">💡 老师评语</Text>
-              <Text className="feedback-text">{result.comment}</Text>
+            <View className="bg-white rounded-3xl p-6 shadow-sm mb-4">
+              <Text className="block text-lg font-bold text-gray-800 mb-3">💡 老师评语</Text>
+              <Text className="text-base text-gray-600 leading-relaxed text-justify">
+                {result.comment}
+              </Text>
             </View>
 
             {/* 优点 */}
-            <View className="feedback-card">
-              <Text className="card-title">🌟 亮点展示</Text>
+            <View className="bg-white rounded-3xl p-6 shadow-sm mb-4">
+              <Text className="block text-lg font-bold text-gray-800 mb-3">🌟 亮点展示</Text>
               {result.pros.map((item, index) => (
-                <View key={index} className="list-item">
-                  <AtIcon value="check-circle" size="16" color="#4cd964" />
-                  <Text className="item-text">{item}</Text>
+                <View key={index} className="flex items-start mb-2 last:mb-0">
+                  <View className="mt-0.5 mr-2">
+                    <AtIcon value="check-circle" size="16" color="#4cd964" />
+                  </View>
+                  <Text className="text-base text-gray-600 flex-1">{item}</Text>
                 </View>
               ))}
             </View>
 
             {/* 建议 */}
-            <View className="feedback-card">
-              <Text className="card-title">🔧 提升建议</Text>
+            <View className="bg-white rounded-3xl p-6 shadow-sm mb-8">
+              <Text className="block text-lg font-bold text-gray-800 mb-3">🔧 提升建议</Text>
               {result.suggestions.map((item, index) => (
-                <View key={index} className="list-item">
-                  <AtIcon value="alert-circle" size="16" color="#FF9800" />
-                  <Text className="item-text">{item}</Text>
+                <View key={index} className="flex items-start mb-2 last:mb-0">
+                  <View className="mt-0.5 mr-2">
+                    <AtIcon value="alert-circle" size="16" color="#FF9800" />
+                  </View>
+                  <Text className="text-base text-gray-600 flex-1">{item}</Text>
                 </View>
               ))}
             </View>

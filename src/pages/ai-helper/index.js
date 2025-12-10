@@ -1,7 +1,8 @@
 import { View, Text, ScrollView, Input } from "@tarojs/components";
 import Taro from "@tarojs/taro";
-import { AtButton, AtIcon, AtMessage } from "taro-ui";
-import { useState, useRef, useEffect } from "react";
+import { AtIcon, AtMessage } from "taro-ui";
+import { useState, useEffect } from "react";
+import classNames from "classnames";
 import Navbar from "../../components/Navbar";
 import { mockChat, mockVoiceToText } from "../../services/mockAI";
 import "./index.less";
@@ -73,92 +74,138 @@ export default function AIHelper() {
   };
 
   return (
-    <View className="ai-helper">
+    <View className="ai-helper flex flex-col h-screen bg-white">
       <Navbar title="光子AI助手" back={true} />
       <AtMessage />
 
       {/* 顶部 Tabs */}
-      <View className="tabs-header">
-        {tabs.map((tab, index) => (
-          <View
-            key={index}
-            className={`tab-item ${currentTab === index ? "active" : ""}`}
-            onClick={() => setCurrentTab(index)}
-          >
-            <Text className="tab-text">{tab}</Text>
-            {currentTab === index && <View className="tab-line" />}
-          </View>
-        ))}
-        <View className="clear-btn" onClick={handleClear}>
-          <AtIcon value="trash" size="16" color="#999" />
+      <View className="flex items-center justify-between px-4 h-12 bg-white border-b border-gray-100">
+        <View className="flex space-x-6">
+          {tabs.map((tab, index) => (
+            <View
+              key={index}
+              className="relative flex flex-col items-center h-12 justify-center"
+              onClick={() => setCurrentTab(index)}
+            >
+              <Text
+                className={classNames(
+                  "text-base transition-all duration-200",
+                  currentTab === index ? "text-gray-900 font-bold" : "text-gray-500 font-medium",
+                )}
+              >
+                {tab}
+              </Text>
+              {currentTab === index && (
+                <View className="absolute bottom-0 w-4 h-1 bg-[#4cd964] rounded-full" />
+              )}
+            </View>
+          ))}
+        </View>
+        <View className="p-2" onClick={handleClear}>
+          <AtIcon value="trash" size="18" color="#9ca3af" />
         </View>
       </View>
 
       {/* 聊天内容区 */}
-      <ScrollView scrollY className="chat-content" scrollTop={scrollTop} scrollWithAnimation>
-        {chatList.length === 0 ? (
-          <View className="empty-state">
-            <AtIcon value="message" size="48" color="#eee" />
-            <Text className="empty-text">
-              我是你的光子AI助手，快来问我问题吧！
-              {"\n"}例如："
-              {tabs[currentTab] === "解语文题"
-                ? "这道题怎么做"
-                : tabs[currentTab] === "AI 背诵"
-                ? "背诵静夜思"
-                : "为什么天是蓝的"}
-              "
-            </Text>
-          </View>
-        ) : (
-          chatList.map((msg, index) => (
-            <View key={index} className={`chat-item ${msg.role}`}>
-              <View className="avatar">
-                {msg.role === "ai" ? (
-                  <AtIcon value="lightning-bolt" size="20" color="#fff" />
-                ) : (
-                  <AtIcon value="user" size="20" color="#fff" />
-                )}
+      <ScrollView
+        scrollY
+        className="chat-content flex-1 bg-[#f9fafb]"
+        scrollTop={scrollTop}
+        scrollWithAnimation
+      >
+        <View className="min-h-full p-4 pb-20">
+          {chatList.length === 0 ? (
+            <View className="flex flex-col items-center justify-center h-[60vh] opacity-80">
+              <View className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mb-6">
+                <AtIcon value="message" size="32" color="#e5e7eb" />
               </View>
-              <View className="bubble">
-                <Text userSelect>{msg.content}</Text>
-              </View>
+              <Text className="text-gray-400 text-sm mb-2">
+                我是你的光子AI助手，快来问我问题吧！
+              </Text>
+              <Text className="text-gray-300 text-xs">例如：“这道题怎么做”</Text>
             </View>
-          ))
-        )}
-        {loading && (
-          <View className="chat-item ai">
-            <View className="avatar">
-              <AtIcon value="lightning-bolt" size="20" color="#fff" />
+          ) : (
+            <View className="space-y-6">
+              {chatList.map((msg, index) => (
+                <View
+                  key={index}
+                  className={classNames("flex w-full", {
+                    "justify-end": msg.role === "user",
+                    "justify-start": msg.role === "ai",
+                  })}
+                >
+                  <View
+                    className={classNames(
+                      "max-w-[80%] rounded-2xl px-4 py-3 text-base leading-relaxed shadow-sm",
+                      msg.role === "user"
+                        ? "bg-[#4cd964] text-white rounded-tr-none"
+                        : "bg-white text-gray-800 rounded-tl-none",
+                    )}
+                  >
+                    <Text userSelect>{msg.content}</Text>
+                  </View>
+                </View>
+              ))}
+              {loading && (
+                <View className="flex justify-start w-full">
+                  <View className="bg-white text-gray-800 rounded-2xl rounded-tl-none px-4 py-3 shadow-sm flex items-center space-x-1">
+                    <View
+                      className="w-2 h-2 bg-gray-300 rounded-full animate-bounce"
+                      style={{ animationDelay: "0ms" }}
+                    />
+                    <View
+                      className="w-2 h-2 bg-gray-300 rounded-full animate-bounce"
+                      style={{ animationDelay: "150ms" }}
+                    />
+                    <View
+                      className="w-2 h-2 bg-gray-300 rounded-full animate-bounce"
+                      style={{ animationDelay: "300ms" }}
+                    />
+                  </View>
+                </View>
+              )}
             </View>
-            <View className="bubble loading-bubble">
-              <View className="dot"></View>
-              <View className="dot"></View>
-              <View className="dot"></View>
-            </View>
-          </View>
-        )}
-        <View className="bottom-spacer" />
+          )}
+        </View>
       </ScrollView>
 
       {/* 底部输入栏 */}
-      <View className="input-bar">
-        <View className="voice-btn" onClick={handleVoiceInput}>
-          <AtIcon value="volume-plus" size="24" color="#666" />
-        </View>
-        <Input
-          className="chat-input"
-          value={inputVal}
-          onInput={(e) => setInputVal(e.detail.value)}
-          placeholder="请输入你的问题，如：咏物诗怎么赏析"
-          confirmType="send"
-          onConfirm={handleSend}
-        />
+      <View className="bg-white px-4 py-3 border-t border-gray-100 flex items-center gap-3 pb-safe">
         <View
-          className={`send-btn ${!inputVal.trim() && !loading ? "disabled" : ""}`}
+          className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-50 active:bg-gray-100 transition-colors"
+          onClick={handleVoiceInput}
+        >
+          <AtIcon value="volume-plus" size="22" color="#6b7280" />
+        </View>
+
+        <View className="flex-1 bg-gray-50 rounded-lg px-4 py-2.5 flex items-center">
+          <Input
+            className="w-full text-base text-gray-800"
+            value={inputVal}
+            onInput={(e) => setInputVal(e.detail.value)}
+            placeholder="请输入你的问题，如：咏物诗怎么赏析"
+            placeholderClass="text-gray-400 text-sm"
+            confirmType="send"
+            onConfirm={handleSend}
+            cursorSpacing={20}
+          />
+        </View>
+
+        <View
+          className={classNames(
+            "px-4 py-2 rounded-lg transition-all duration-200",
+            !inputVal.trim() && !loading ? "bg-gray-200" : "bg-gray-900 active:scale-95",
+          )}
           onClick={handleSend}
         >
-          <Text className="send-text">提问</Text>
+          <Text
+            className={classNames(
+              "text-sm font-bold",
+              !inputVal.trim() && !loading ? "text-gray-400" : "text-white",
+            )}
+          >
+            提问
+          </Text>
         </View>
       </View>
     </View>

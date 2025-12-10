@@ -73,68 +73,73 @@ export default function AIWrite() {
   };
 
   return (
-    <View className="ai-write">
+    <View className="ai-write flex flex-col h-screen bg-gray-50">
       <Navbar title="AI写作" back={true} />
       <AtMessage />
       <Loading show={loading} text={loadingText} />
 
-      <ScrollView scrollY className="content">
+      <ScrollView scrollY className="content flex-1 p-5 box-border">
         {/* 输入区域 */}
-        <View className="input-section">
-          <View className="form-item">
-            <Text className="label">选择场景</Text>
+        <View className="input-section bg-white rounded-2xl p-5 shadow-sm mb-6">
+          <View className="form-item mb-6">
+            <Text className="label block text-base font-bold text-gray-800 mb-3">选择场景</Text>
             <Picker mode="selector" range={scenes} value={sceneIndex} onChange={handleSceneChange}>
-              <View className="picker-wrapper">
-                <Text className="picker-text">{scenes[sceneIndex]}</Text>
-                <AtIcon value="chevron-down" size="16" color="#999" />
+              <View className="picker-wrapper flex items-center justify-between bg-gray-100 py-3 px-4 rounded-xl">
+                <Text className="picker-text text-base text-gray-800">{scenes[sceneIndex]}</Text>
+                <AtIcon value="chevron-down" size="18" color="#999" />
               </View>
             </Picker>
           </View>
 
-          <View className="form-item">
-            <Text className="label">创作主题</Text>
-            <View className="textarea-wrapper">
+          <View className="form-item mb-6">
+            <Text className="label block text-base font-bold text-gray-800 mb-3">创作主题</Text>
+            <View className="textarea-wrapper bg-gray-100 rounded-xl p-4 relative">
               <Textarea
-                className="topic-input"
+                className="topic-input w-full min-h-[160px] text-base leading-normal text-gray-800 bg-transparent"
                 value={topic}
                 onInput={handleTopicChange}
                 placeholder="请输入创作主题，如：我的校园、小预算旅行"
+                placeholderClass="text-gray-400"
                 maxlength={200}
                 autoHeight
               />
-              <Text className="char-count">{topic.length}/200</Text>
+              <Text className="char-count absolute bottom-3 right-4 text-xs text-gray-400">
+                {topic.length}/200
+              </Text>
             </View>
           </View>
 
           <AtButton
             type="primary"
-            className="generate-btn"
+            className="generate-btn mt-4 w-full bg-green-500 border-green-500 shadow-md"
             disabled={!topic.trim()}
             onClick={handleGenerate}
             circle
           >
-            开始生成
+            开始创作
           </AtButton>
         </View>
 
         {/* 结果区域 */}
         {result && (
-          <View className="result-section">
-            <View className="result-header">
-              <Text className="result-title">生成结果</Text>
-              <View className="actions">
-                <View className="action-btn" onClick={handleCopy}>
-                  <AtIcon value="copy" size="16" color="#007AFF" />
-                  <Text style={{ color: "#007AFF" }}>复制</Text>
+          <View className="result-section bg-white rounded-2xl p-5 shadow-sm animate-fade-in mb-8">
+            <View className="result-header flex justify-between items-center mb-4 pb-3 border-b border-gray-100">
+              <Text className="result-title text-lg font-bold text-gray-800">创作结果</Text>
+              <View className="actions flex">
+                <View className="action-btn flex items-center mr-4" onClick={handleCopy}>
+                  <AtIcon value="copy" size="16" color="#666" />
+                  <Text className="ml-1 text-sm text-gray-600">复制</Text>
                 </View>
-                <View className="action-btn" onClick={handleClear}>
-                  <AtIcon value="trash" size="16" color="#FF3B30" />
-                  <Text style={{ color: "#FF3B30" }}>清空</Text>
+                <View className="action-btn flex items-center" onClick={handleClear}>
+                  <AtIcon value="trash" size="16" color="#666" />
+                  <Text className="ml-1 text-sm text-gray-600">清空</Text>
                 </View>
               </View>
             </View>
             <View className="result-content">
-              <Text userSelect>{result}</Text>
+              <Text userSelect className="text-base text-gray-700 leading-relaxed text-justify">
+                {result}
+              </Text>
             </View>
           </View>
         )}
