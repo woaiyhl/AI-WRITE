@@ -87,7 +87,7 @@ export default function Index() {
         {/* 第二行：通栏卡片 */}
         <View
           className="w-full h-44 bg-[#e3f2fd] rounded-2xl p-6 flex flex-col items-center justify-center active:scale-95 transition-transform duration-200"
-          onClick={() => navigateTo("/pages/ai-helper/index")}
+          onClick={() => Taro.switchTab({ url: "/pages/ai-helper/index" })}
         >
           <Text className="text-2xl font-bold text-[#0d47a1] mb-2">光子AI助手</Text>
           <Text className="text-sm text-[#42a5f5] font-medium mb-4 opacity-80">

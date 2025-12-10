@@ -42,7 +42,7 @@ export default function Navbar({
               <AtIcon value="chevron-left" size="24" color={color}></AtIcon>
             </View>
           )}
-          <Text className="title" style={{ color }}>
+          <Text className="title" style={{ color, fontSize: "20px" }}>
             {title}
           </Text>
         </View>
