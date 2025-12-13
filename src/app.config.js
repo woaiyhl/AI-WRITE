@@ -44,11 +44,8 @@ export default {
     ],
   },
   permission: {
-    "scope.camera": {
-      desc: "用于拍照识别作文",
-    },
-    "scope.writePhotosAlbum": {
-      desc: "用于保存作文图片",
+    "scope.userLocation": {
+      desc: "你的位置信息将用于小程序位置接口的效果展示",
     },
   },
 };

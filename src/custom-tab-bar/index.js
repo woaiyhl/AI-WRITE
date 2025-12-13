@@ -201,13 +201,11 @@ export default function CustomTabBar() {
               </View>
             ) : (
               <>
-                <View className={classNames("tab-icon", isSelected ? "active" : "")}>
-                  className={classNames(
-                    styles["tab-text"],
-                    isSelected ? "text-[#00c777] font-medium" : "text-gray-400",
-                  )}
-                    "tab-text",
-                    isSelected ? "text-[#00c777] font-medium" : "text-gray-400",
+                <View className="tab-icon">
+                  {IconComponent && <IconComponent active={isSelected} />}
+                </View>
+                <Text className={classNames("tab-text", { active: isSelected })}>
+                  {item.text}
                 </Text>
               </>
             )}
