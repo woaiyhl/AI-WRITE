@@ -7,6 +7,7 @@ export default {
     "pages/mine/index",
     "pages/ai-write/index",
     "pages/ai-correct/index",
+    "pages/identity-select/index",
   ],
   window: {
     backgroundTextStyle: "light",
